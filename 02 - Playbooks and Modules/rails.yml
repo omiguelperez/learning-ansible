@@ -1,0 +1,21 @@
+---
+
+- name: Upgrade packages
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+
+- name: Create users
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Create user deploy
+      user:
+        name: deploy
+        shell: /bin/bash
+        groups: sudo
