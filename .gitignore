@@ -54,3 +54,4 @@ test/vagrant-spec/boxes/*.box
 # Ansible course
 .vscode/
 ssh/
+*.retry

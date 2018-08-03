@@ -1,0 +1,25 @@
+---
+
+- name: workaround for relative private keys
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Set correct ssh key path
+      set_fact:
+        ansible_ssh_private_key_file: "{{ ansible_ssh_private_key_file | realpath }}"
+      when: ansible_ssh_private_key_file is defined
+
+- hosts: all
+  gather_facts: False
+  become: true
+  
+  tasks:
+  - name: install python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- name: test ping
+  hosts: all
+  gather_facts: no
+  tasks:
+    - ping:
