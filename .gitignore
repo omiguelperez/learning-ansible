@@ -55,3 +55,4 @@ test/vagrant-spec/boxes/*.box
 .vscode/
 ssh/
 *.retry
+*.log

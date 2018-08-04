@@ -19,3 +19,23 @@
         name: deploy
         shell: /bin/bash
         groups: sudo
+
+- name: Install rbenv and dependencies
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install rbenv
+      apt:
+        name: rbenv
+        state: present
+        update_cache: yes
+    
+    - name: Install the package build-essetial
+      apt: name=build-essential state=present update_cache=yes
+    
+    - name: Install the package libssl-dev
+      apt: name=libssl-dev state=present update_cache=yes
+
+    - name: Install the package libreadline-dev
+      apt: name=libreadline-dev state=present update_cache=yes
