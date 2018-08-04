@@ -33,10 +33,24 @@
     
     - name: Install dependencies
       apt: 
-        name="{{ item }}" 
-        state=present 
-        update_cache=yes
+        name: "{{ item }}" 
+        state: present 
+        update_cache: yes
       with_items:
         - build-essential
         - libssl-dev
         - libreadline-dev
+
+- name: Configure rbenv
+  hosts: all
+  become: yes
+  become_user: deploy
+
+  tasks:
+    - name: Automaticaly init rbenv
+      lineinfile:
+        dest: ~/.bashrc
+        regexp: eval "\$\(rbenv init -\)"
+        line: eval "$(rbenv init -)"
+        insertafter: EOF
+  
