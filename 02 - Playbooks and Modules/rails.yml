@@ -33,11 +33,10 @@
     
     - name: Install dependencies
       apt: 
-        name="{{ packages }}" 
+        name="{{ item }}" 
         state=present 
         update_cache=yes
-      vars:
-        packages:
-          - build-essential
-          - libssl-dev
-          - libreadline-dev
+      with_items:
+        - build-essential
+        - libssl-dev
+        - libreadline-dev
