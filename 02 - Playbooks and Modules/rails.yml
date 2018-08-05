@@ -159,3 +159,43 @@
       service:
         name: nginx
         state: restarted
+
+- name: Install mysql server
+  hosts: all
+  become: yes
+  become_user: root
+  tags:
+    - mysql
+  
+  tasks:
+    - name: Set MySQL root password before installing
+      debconf:
+        name: mysql-server
+        question: mysql-server/root_password
+        value: 12345
+        vtype: password
+
+    - name: Confirm MySQL root password before installing
+      debconf:
+        name: mysql-server
+        question: mysql-server/root_password_again
+        value: 12345
+        vtype: password
+
+    - name: Install MySQL
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - mysql-server
+        - mysql-client
+        - libmysqlclient-dev
+
+    - name: Copy MySQL automatic login file
+      copy:
+        src: my.cnf
+        dest: /root/.my.cnf
+        owner: root
+        group: root
+        mode: 0600
