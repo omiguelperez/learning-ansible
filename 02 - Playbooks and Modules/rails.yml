@@ -191,6 +191,7 @@
         - mysql-server
         - mysql-client
         - libmysqlclient-dev
+        - python-mysqldb
 
     - name: Copy MySQL automatic login file
       copy:
@@ -225,3 +226,24 @@
       service:
         name: nginx
         state: restarted
+
+- name: Configure MySQL database
+  hosts: all
+  become: yes
+  become_user: root
+  tags:
+    - app
+    - db
+
+  tasks:
+    - name: Create database
+      mysql_db:
+        name: DuckRecognizer
+        state: present
+
+    - name: Create and give permissions
+      mysql_user:
+        name: duckuser
+        password: duckuser
+        priv: 'DuckRecognizer.*:ALL'
+        state: present
