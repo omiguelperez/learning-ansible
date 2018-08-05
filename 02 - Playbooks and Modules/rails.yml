@@ -94,4 +94,68 @@
     
     - name: Rehash rbenv
       command: rbenv rehash
+
+- name: Install nginx and passenger
+  hosts: all
+  become: yes
+  become_user: root
+  tags:
+    - nginx
+    - passenger
   
+  tasks:
+    - name: Add repository key
+      apt_key:
+        keyserver: hkp://keyserver.ubuntu.com:80
+        id: 561F9B9CAC40B2F7
+    
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+    
+    - name: Add Passenger APT repository
+      apt_repository:
+        repo: deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main
+        state: present
+  
+    - name: Install nginx and passenger
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - nginx-extras
+        - passenger
+
+- name: Configure nginx and passenger
+  hosts: all
+  become: yes
+  become_user: root
+  tags:
+    - nginx
+    - passenger
+  
+  tasks:
+    - name: Include Passenger configuration in nginx
+      lineinfile:
+        dest: /etc/nginx/nginx.conf
+        regexp: include \/etc\/nginx\/passenger\.conf;
+        line: include /etc/nginx/passenger.conf;
+        insertafter: EOF
+
+    - name: Point Passenger to the version of Ruby that we're using
+      lineinfile:
+            dest: /etc/nginx/passenger.conf 
+            regexp: passenger_ruby .*;
+            line: passenger_ruby /home/deploy/.rbenv/shims/ruby;
+            insertafter: EOF
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
