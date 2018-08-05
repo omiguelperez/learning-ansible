@@ -150,10 +150,10 @@
 
     - name: Point Passenger to the version of Ruby that we're using
       lineinfile:
-            dest: /etc/nginx/passenger.conf 
-            regexp: passenger_ruby .*;
-            line: passenger_ruby /home/deploy/.rbenv/shims/ruby;
-            insertafter: EOF
+        dest: /etc/nginx/passenger.conf 
+        regexp: passenger_ruby .*;
+        line: passenger_ruby /home/deploy/.rbenv/shims/ruby;
+        insertafter: EOF
 
     - name: Restart nginx
       service:
@@ -199,3 +199,29 @@
         owner: root
         group: root
         mode: 0600
+
+- name: Install application
+  hosts: all
+  become: yes
+  become_user: root
+  tags: app
+
+  tasks: 
+    - name: Clone app repository
+      become_user: deploy
+      git:
+        repo: https://github.com/omiguelperez/DuckRecognizer.git
+        dest: ~/DuckRecognizer
+
+    - name: Copy nginx host configuration
+      copy:
+        src: app.conf
+        dest: /etc/nginx/sites-enabled/default
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+      
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
