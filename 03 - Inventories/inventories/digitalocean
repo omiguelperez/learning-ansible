@@ -1,0 +1,12 @@
+[digitalocean:children]
+webapps
+databases
+
+[webapps]
+webapp1 ansible_host=127.0.0.1 ansible_port=2200 ansible_user=vagrant ansible_ssh_private_key_file="../ssh/ansible"
+webapp2 ansible_host=127.0.0.1 ansible_port=2200 ansible_user=vagrant ansible_ssh_private_key_file="../ssh/ansible"
+webapp3 ansible_host=127.0.0.1 ansible_port=2200 ansible_user=vagrant ansible_ssh_private_key_file="../ssh/ansible"
+
+[databases]
+database1 ansible_host=127.0.0.1 ansible_port=2200 ansible_user=vagrant ansible_ssh_private_key_file="../ssh/ansible"
+database2 ansible_host=127.0.0.1 ansible_port=2200 ansible_user=vagrant ansible_ssh_private_key_file="../ssh/ansible"
